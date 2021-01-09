@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+
+import Game from "./life.ts";
+
+const game = new Game(10, 10);
+for (let i = 0; i < 10; i++)
+  for (let j = 0; j < 10; j++) game.setCell(i, j, false);
+game.setCell(2, 2, true);
+game.setCell(3, 2, true);
+game.setCell(2, 3, true);
+game.setCell(1, 3, true);
+game.setCell(2, 4, true);
+
+function BoardView({ game }) {
+  let body = "";
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 10; j++) body += game.getCell(j, i) ? "X" : ".";
+    body += "\n";
+  }
+  return <pre style={{ fontFamily: "monospace", fontSize: "3em" }}>{body}</pre>;
+}
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const [, setLifeInterval] = useState(null);
+  const [gameView, setGameView] = useState(null);
+
+  useEffect(() => {
+    setLifeInterval((lifeInterval) => {
+      if (lifeInterval) return lifeInterval;
+      return setInterval(function () {
+        game.next();
+        setGameView(<BoardView game={game} />);
+      }, 500);
+    });
+  }, [gameView]);
+
+  return gameView;
 }
 
 export default App;
