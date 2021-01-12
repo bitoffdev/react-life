@@ -3,47 +3,31 @@ interface Coordinate {
   row: number;
 }
 
-interface GameCells {
-  [key: number]: boolean;
-}
-
 export default class Game {
   height: number;
   width: number;
-  cells: GameCells;
+  livingCells: Set<string>;
 
-  constructor(height: number, width: number, cells: GameCells) {
+  constructor(height: number, width: number) {
     this.height = height;
     this.width = width;
-    this.cells = {};
+    this.livingCells = new Set();
   }
 
-  _coordsToIndex(column: number, row: number): number {
-    return row * this.height + column;
-  }
-
-  _indexToCoords(index: number): Coordinate {
-    return {
-      column: index % this.height,
-      row: Math.floor(index / this.height),
-    };
-  }
-
-  getCell(column: number, row: number): boolean | undefined {
-    if (column < 0 || row < 0 || column >= this.width || row >= this.height)
-      return undefined;
-    return this.cells[this._coordsToIndex(column, row)];
+  getCell(column: number, row: number): boolean {
+    return this.livingCells.has(`${column}:${row}`);
   }
 
   flipCell(column: number, row: number) {
-    if (column < 0 || row < 0 || column >= this.width || row >= this.height)
-      throw "Invalid coordinates";
-    const index = this._coordsToIndex(column, row);
-    this.cells[index] = !this.cells[index];
+    const k = `${column}:${row}`;
+    if (this.livingCells.has(k)) this.livingCells.delete(k);
+    else this.livingCells.add(k);
   }
 
   setCell(column: number, row: number, isLiving: boolean) {
-    this.cells[this._coordsToIndex(column, row)] = isLiving;
+    const k = `${column}:${row}`;
+    if (isLiving) this.livingCells.add(k);
+    else this.livingCells.delete(k);
   }
 
   countLivingNeighbors(column: number, row: number): number {
@@ -63,8 +47,7 @@ export default class Game {
           case 2:
             break;
           case 3:
-            if (this.getCell(i, j) === false)
-              changed.push({ column: i, row: j });
+            if (!this.getCell(i, j)) changed.push({ column: i, row: j });
             break;
           case 0:
           case 1:
