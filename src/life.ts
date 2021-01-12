@@ -1,16 +1,7 @@
-interface Coordinate {
-  column: number;
-  row: number;
-}
-
 export default class Game {
-  height: number;
-  width: number;
   livingCells: Set<string>;
 
-  constructor(height: number, width: number) {
-    this.height = height;
-    this.width = width;
+  constructor() {
     this.livingCells = new Set();
   }
 
@@ -39,27 +30,51 @@ export default class Game {
   }
 
   next() {
-    // build up the list of cells that we need to flip in the first pass
-    const changed: Array<Coordinate> = [];
-    for (let i = 0; i < this.height; i++) {
-      for (let j = 0; j < this.width; j++) {
-        switch (this.countLivingNeighbors(i, j)) {
-          case 2:
-            break;
-          case 3:
-            if (!this.getCell(i, j)) changed.push({ column: i, row: j });
-            break;
-          case 0:
-          case 1:
-          case 4:
-            if (this.getCell(i, j)) changed.push({ column: i, row: j });
-        }
-      }
-    }
+    const neighborCounts = new Map<string, number>();
 
-    // apply the changes
-    for (let i = 0; i < changed.length; i++) {
-      this.flipCell(changed[i].column, changed[i].row);
-    }
+    const incrCount = (column: number, row: number, addend: number) =>
+      neighborCounts.set(
+        `${column}:${row}`,
+        (neighborCounts.get(`${column}:${row}`) ?? 0) + addend
+      );
+
+    // generate the `neighborCounts` map
+    this.livingCells.forEach((coordinateKey) => {
+      const [column, row] = coordinateKey
+        .split(":")
+        .map((coordinate) => parseInt(coordinate));
+
+      // make sure this living cell exists in neighborCounts so it will get updated if it has 0 neighbors
+      incrCount(column, row, 0);
+
+      // increment the 8 neighbors of this living cell
+      for (let i = -1; i < 2; i++)
+        for (let j = -1; j < 2; j++)
+          if (i !== 0 || j !== 0) incrCount(column + i, row + j, 1);
+    });
+
+    // flip the cells
+    neighborCounts.forEach((countOfNeighbors, coordinateKey) => {
+      switch (countOfNeighbors) {
+        case 2:
+          break;
+        case 3:
+          this.livingCells.add(coordinateKey);
+          break;
+        case 0:
+        case 1:
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+          this.livingCells.delete(coordinateKey);
+          break;
+        default:
+          console.error(
+            `Unexpected count of neighbors: ${countOfNeighbors} for coordinate ${coordinateKey}`
+          );
+      }
+    });
   }
 }

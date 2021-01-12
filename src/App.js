@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 
 import Game from "./life.ts";
 
-const game = new Game(10, 10);
-for (let i = 0; i < 10; i++)
-  for (let j = 0; j < 10; j++) game.setCell(i, j, false);
+const game = new Game();
 game.setCell(2, 2, true);
 game.setCell(3, 2, true);
 game.setCell(2, 3, true);
@@ -13,11 +11,11 @@ game.setCell(2, 4, true);
 
 function BoardView({ game }) {
   let body = "";
-  for (let i = 0; i < 10; i++) {
-    for (let j = 0; j < 10; j++) body += game.getCell(j, i) ? "X" : ".";
+  for (let i = -15; i < 15; i++) {
+    for (let j = -30; j < 30; j++) body += game.getCell(j, i) ? "X" : ".";
     body += "\n";
   }
-  return <pre style={{ fontFamily: "monospace", fontSize: "3em" }}>{body}</pre>;
+  return <pre style={{ fontFamily: "monospace", fontSize: "2em" }}>{body}</pre>;
 }
 
 function App() {
@@ -30,7 +28,7 @@ function App() {
       return setInterval(function () {
         game.next();
         setGameView(<BoardView game={game} />);
-      }, 500);
+      }, 200);
     });
   }, [gameView]);
 
