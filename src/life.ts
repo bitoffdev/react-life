@@ -29,6 +29,72 @@ export default class Game {
     return count;
   }
 
+  loadText(text: string) {
+    // reset the board
+    this.livingCells = new Set();
+
+    let width = 0;
+    let height = 0;
+    let columnOrigin = 0;
+    let rowOrigin = 0;
+    let x = 0;
+    let y = 0;
+    let sequence = 1;
+
+    for (let line of text.split("\n")) {
+      // skip comments
+      if (line.length >= 1 && line[0] === '#') continue;
+      const pieces = line.split(",");
+      if (pieces.length > 1) {
+        for (let piece of pieces) {
+          const tokens = piece.split("=").map((x) => x.trim());
+          if (tokens.length !== 2) continue;
+          if (tokens[0] === "x") {
+            width = parseInt(tokens[1]);
+            columnOrigin = - Math.floor( width / 2 );
+          }
+          if (tokens[0] === "y") {
+            height = parseInt(tokens[1]);
+            rowOrigin = - Math.floor(height / 2);
+          }
+        }
+      } else {
+        const regex = /[0-9]+|b|o|\$/gm;
+
+        let m;
+
+        while ((m = regex.exec(line)) !== null) {
+          // needed to avoid infinite loops with zero-width matches
+          if (m.index === regex.lastIndex) {
+            regex.lastIndex++;
+          }
+
+          m.forEach((match, groupIndex) => {
+            if (match === "b") {
+              x += sequence;
+              sequence = 1;
+            } else if (match === "o") {
+              for (let iter=x;iter<x+sequence;iter++)
+                this.setCell(columnOrigin + iter, rowOrigin + y, true);
+              x += sequence;
+              sequence = 1;
+            } else if (match === "$") {
+              y += sequence;
+              x = 0;
+              sequence = 1;
+            } else {
+              sequence = parseInt(match);
+            }
+          });
+        }
+      }
+    }
+  }
+
+  async loadBlob(blob: Blob) {
+    return await blob.text().then((text) => this.loadText(text));
+  }
+
   next() {
     const neighborCounts = new Map<string, number>();
 
