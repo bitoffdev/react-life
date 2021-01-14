@@ -1,10 +1,10 @@
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Game from "./life";
 import useResizeObserver from "use-resize-observer";
 
 interface LifeCanvasProps {
-  cellPixelWidth: number,
+  cellPixelWidth: number;
   className?: string;
   game: Game | null;
   intervalMillis: number;
@@ -14,7 +14,7 @@ interface LifeCanvasProps {
 const render = (
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
   game: Game | null,
-  cellPixelWidth: number,
+  cellPixelWidth: number
 ) => {
   if (!game) return;
 
@@ -30,11 +30,7 @@ const render = (
   const lowestColumn = -Math.floor(numberOfColumns / 2);
   const lowestRow = -Math.floor(numberOfRows / 2);
 
-  for (
-    let row = lowestRow;
-    row <= lowestRow + numberOfRows;
-    row++
-  ) {
+  for (let row = lowestRow; row <= lowestRow + numberOfRows; row++) {
     for (
       let column = lowestColumn;
       column <= lowestColumn + numberOfColumns;
@@ -47,7 +43,7 @@ const render = (
         (column - lowestColumn) * cellPixelWidth,
         (row - lowestRow) * cellPixelWidth,
         cellPixelWidth,
-          cellPixelWidth
+        cellPixelWidth
       );
     }
   }
@@ -62,13 +58,20 @@ export default function LifeCanvas(props: LifeCanvasProps) {
   // const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const [ size, setSize ] = useState<{ width?: number, height?: number }>({ width: 200, height: 200 });
+  const [size, setSize] = useState<{ width?: number; height?: number }>({
+    width: 200,
+    height: 200,
+  });
   const { ref } = useResizeObserver<HTMLDivElement>({
-    onResize: size => setSize(size)
+    onResize: (size) => setSize(size),
   });
 
   // do a single render when the game changes or the canvas size changes
-  useEffect(() => render(canvasRef, props.game, cellPixelWidth), [cellPixelWidth, props.game, size]);
+  useEffect(() => render(canvasRef, props.game, cellPixelWidth), [
+    cellPixelWidth,
+    props.game,
+    size,
+  ]);
 
   // Only update when the props change. Don't update when the state changes.
   useEffect(

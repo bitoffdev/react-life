@@ -59,9 +59,7 @@ export default function LoadUrlModal(props: LoadUrlModalProps) {
         </Form>
         <Button
           href="#"
-          onClick={() =>
-            setUrl("/api/v1/objects/r-pentamino.rle")
-          }
+          onClick={() => setUrl("/api/v1/objects/r-pentamino.rle")}
         >
           Example 1
         </Button>

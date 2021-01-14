@@ -43,7 +43,7 @@ export default class Game {
 
     for (let line of text.split("\n")) {
       // skip comments
-      if (line.length >= 1 && line[0] === '#') continue;
+      if (line.length >= 1 && line[0] === "#") continue;
       const pieces = line.split(",");
       if (pieces.length > 1) {
         for (let piece of pieces) {
@@ -51,11 +51,11 @@ export default class Game {
           if (tokens.length !== 2) continue;
           if (tokens[0] === "x") {
             width = parseInt(tokens[1]);
-            columnOrigin = - Math.floor( width / 2 );
+            columnOrigin = -Math.floor(width / 2);
           }
           if (tokens[0] === "y") {
             height = parseInt(tokens[1]);
-            rowOrigin = - Math.floor(height / 2);
+            rowOrigin = -Math.floor(height / 2);
           }
         }
       } else {
@@ -68,7 +68,7 @@ export default class Game {
             x += sequence;
             sequence = 1;
           } else if (match === "o") {
-            for (let iter=x;iter<x+sequence;iter++)
+            for (let iter = x; iter < x + sequence; iter++)
               this.setCell(columnOrigin + iter, rowOrigin + y, true);
             x += sequence;
             sequence = 1;

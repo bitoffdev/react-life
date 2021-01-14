@@ -22,7 +22,7 @@ const outlineSuccess: ButtonVariant = "outline-success";
 
 function App() {
   const [game, setGame] = useState<Game | null>(null);
-  const [cellPixelWidth, setCellPixelWidth] = useState( 50);
+  const [cellPixelWidth, setCellPixelWidth] = useState(50);
   const [intervalMillis, setIntervalMillis] = useState(100);
   const [isRunning, setIsRunning] = useState(false);
   const [isFileModalVisible, setIsFileModalVisible] = useState(false);
@@ -105,9 +105,9 @@ function App() {
                   </InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl
-                    type="number"
-                    onChange={onChangeCellPixelWidth}
-                    value={cellPixelWidth}
+                  type="number"
+                  onChange={onChangeCellPixelWidth}
+                  value={cellPixelWidth}
                 />
                 <InputGroup.Append>
                   <InputGroup.Text>px</InputGroup.Text>
@@ -137,11 +137,12 @@ function App() {
             </Form>
           </Navbar.Collapse>
         </Navbar>
-        <LifeCanvas cellPixelWidth={cellPixelWidth}
-            game={game}
-            intervalMillis={intervalMillis}
-            isRunning={isRunning}
-          />
+        <LifeCanvas
+          cellPixelWidth={cellPixelWidth}
+          game={game}
+          intervalMillis={intervalMillis}
+          isRunning={isRunning}
+        />
       </div>
     </>
   );
