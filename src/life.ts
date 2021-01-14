@@ -60,32 +60,25 @@ export default class Game {
         }
       } else {
         const regex = /[0-9]+|b|o|\$/gm;
+        const matches = line.match(regex);
+        if (!matches) continue;
 
-        let m;
-
-        while ((m = regex.exec(line)) !== null) {
-          // needed to avoid infinite loops with zero-width matches
-          if (m.index === regex.lastIndex) {
-            regex.lastIndex++;
+        for (let [, match] of matches.entries()) {
+          if (match === "b") {
+            x += sequence;
+            sequence = 1;
+          } else if (match === "o") {
+            for (let iter=x;iter<x+sequence;iter++)
+              this.setCell(columnOrigin + iter, rowOrigin + y, true);
+            x += sequence;
+            sequence = 1;
+          } else if (match === "$") {
+            y += sequence;
+            x = 0;
+            sequence = 1;
+          } else {
+            sequence = parseInt(match);
           }
-
-          m.forEach((match, groupIndex) => {
-            if (match === "b") {
-              x += sequence;
-              sequence = 1;
-            } else if (match === "o") {
-              for (let iter=x;iter<x+sequence;iter++)
-                this.setCell(columnOrigin + iter, rowOrigin + y, true);
-              x += sequence;
-              sequence = 1;
-            } else if (match === "$") {
-              y += sequence;
-              x = 0;
-              sequence = 1;
-            } else {
-              sequence = parseInt(match);
-            }
-          });
         }
       }
     }
