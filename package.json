@@ -47,5 +47,6 @@
     "@types/react": "^17.0.0",
     "@types/react-bootstrap": "^0.32.25",
     "prettier": "^2.2.1"
-  }
+  },
+  "homepage": "/react-life/"
 }
